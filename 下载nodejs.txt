@@ -1,0 +1,3 @@
+apt install nodejs npm#下载nodejs
+node -v#检查下载的版本
+node#启动REPL
