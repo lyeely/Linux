@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # 数据库
+  db:
+    image: postgres:15
+    container_name: shop_db
+    environment:
+      POSTGRES_DB: shop
+      POSTGRES_USER: shop_user
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # 后端
+  backend:
+    build: ./backend
+    container_name: shop_backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://shop_user:123456@db:5432/shop
+
+  # 前端
+  frontend:
+    image: nginx:alpine
+    container_name: shop_frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
